@@ -1,0 +1,195 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# 개발 가이드라인 및 코딩 스타일
+
+## 🎯 프로젝트 철학
+
+### 핵심 원칙
+- **사용자 중심 설계**: 16인치 노트북에서 100% 크기로 전체 화면 표시
+- **반응형 우선**: 모바일부터 데스크톱까지 완벽한 대응
+- **접근성 준수**: 다크모드, 모션 감소, 키보드 내비게이션 지원
+- **성능 최적화**: 빠른 로딩과 부드러운 사용자 경험
+
+## 📝 코딩 스타일 가이드
+
+### JavaScript ([app.js](mdc:app.js))
+```javascript
+// ✅ 좋은 예시
+function generateMultipleChoiceQuestions() {
+    const questions = [];
+    const selectedTerms = getRandomItems(termsData, 15);
+    
+    selectedTerms.forEach(term => {
+        // 비슷한 카테고리 용어를 우선 선택하여 논리적인 오답 생성
+        const category = getTermCategory(term.term);
+        const relatedTerms = termsData.filter(t => 
+            t.term !== term.term && 
+            getTermCategory(t.term) === category
+        );
+        
+        // 코드 로직...
+    });
+    
+    return questions;
+}
+```
+
+### CSS ([style.css](mdc:style.css))
+```css
+/* ✅ CSS 변수 활용 */
+.quiz-type-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-xl);
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+/* ✅ 반응형 디자인 */
+@media (min-width: 1024px) {
+    .quiz-types {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-4);
+    }
+}
+```
+
+### HTML ([index.html](mdc:index.html))
+```html
+<!-- ✅ 시맨틱 마크업 -->
+<div class="quiz-type-card" data-type="multiple-choice">
+    <div class="card-icon">📝</div>
+    <div class="card-content">
+        <h3>객관식 문제</h3>
+        <p>용어의 정의를 보고 올바른 용어를 선택하세요</p>
+    </div>
+</div>
+```
+
+## 🛠️ 기능 개발 가이드
+
+### 새로운 퀴즈 유형 추가
+1. **[app.js](mdc:app.js)**에 생성 함수 추가
+2. **[index.html](mdc:index.html)**에 UI 컴포넌트 추가
+3. **[style.css](mdc:style.css)**에 스타일 정의
+4. `startQuiz()` 함수에 케이스 추가
+
+### 용어 데이터 확장
+1. **[google-sheets-integration.js](mdc:google-sheets-integration.js)** 활용
+2. 새 카테고리는 `getTermCategory()` 함수에 추가
+3. 아이콘 매핑은 `getTermIcon()` 함수에 추가
+
+## 🎨 디자인 시스템
+
+### 색상 체계
+```css
+:root {
+    --color-primary: #3182ce;
+    --color-secondary: #e2e8f0;
+    --color-text: #1a202c;
+    --color-background: #ffffff;
+}
+
+[data-theme="dark"] {
+    --color-text: #f7fafc;
+    --color-background: #1a202c;
+}
+```
+
+### 간격 시스템
+```css
+:root {
+    --space-1: 0.25rem;   /* 4px */
+    --space-2: 0.5rem;    /* 8px */
+    --space-3: 0.75rem;   /* 12px */
+    --space-4: 1rem;      /* 16px */
+    --space-6: 1.5rem;    /* 24px */
+    --space-8: 2rem;      /* 32px */
+}
+```
+
+## 📱 반응형 브레이크포인트
+
+### 모바일 우선 설계
+```css
+/* 모바일 (기본) */
+.container {
+    max-width: 1024px;
+    padding: var(--space-3);
+}
+
+/* 태블릿 */
+@media (min-width: 640px) {
+    .container {
+        padding: var(--space-4);
+        max-width: 900px;
+    }
+}
+
+/* 데스크톱 */
+@media (min-width: 1024px) {
+    .quiz-types {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* 대형 화면 */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1100px;
+        padding: var(--space-5);
+    }
+}
+```
+
+## 🔧 성능 최적화
+
+### JavaScript 최적화
+- 이벤트 리스너 효율적 관리
+- DOM 조작 최소화
+- 디바운싱 활용 (검색 기능)
+
+### CSS 최적화
+- CSS 변수로 일관성 유지
+- 애니메이션 최적화
+- `prefers-reduced-motion` 준수
+
+## 🌐 접근성 가이드
+
+### 필수 요소
+```html
+<!-- 키보드 접근성 -->
+<button class="btn" tabindex="0" aria-label="설명">
+
+<!-- 스크린 리더 지원 -->
+<div role="button" aria-describedby="help-text">
+
+<!-- 색상 대비 준수 -->
+<div class="high-contrast-text">
+```
+
+### 다크모드 구현
+```css
+[data-theme="dark"] .definition-box {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+    border-color: #6b7280;
+}
+```
+
+## 📊 Google Sheets 연동
+
+### 설정 방법
+- **[Google_Sheets_연동_가이드.md](mdc:Google_Sheets_연동_가이드.md)** 참조
+- **[google-sheets-integration.js](mdc:google-sheets-integration.js)**에서 API 키 설정
+
+### 데이터 형식
+```javascript
+// Google Sheets 컬럼 구조
+{
+    A: "용어",      // 필수
+    B: "정의",      // 필수  
+    C: "카테고리",   // 선택 (기본: '기타')
+    D: "난이도"     // 선택 (기본: 'medium')
+}
+```

@@ -1,0 +1,73 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# IT 용어 학습 퀴즈 앱 - 프로젝트 구조 가이드
+
+## 📁 핵심 파일 구조
+
+### 메인 파일들
+- **[index.html](mdc:index.html)** - 메인 HTML 구조, 모든 화면과 UI 컴포넌트 정의
+- **[app.js](mdc:app.js)** - 핵심 애플리케이션 로직, 퀴즈 기능, 사전 기능, 이벤트 처리
+- **[style.css](mdc:style.css)** - 전체 스타일링, 반응형 디자인, 다크모드, 접근성
+
+### 연동 및 확장 기능
+- **[google-sheets-integration.js](mdc:google-sheets-integration.js)** - Google Sheets API 연동, CSV 파일 처리
+- **[Google_Sheets_연동_가이드.md](mdc:Google_Sheets_연동_가이드.md)** - Google Sheets 설정 및 사용 가이드
+
+## 🎯 주요 기능 모듈
+
+### 퀴즈 시스템 (app.js)
+- `generateMultipleChoiceQuestions()` - 객관식 문제 생성
+- `generateShortAnswerQuestions()` - 단답형 문제 생성 
+- `generateTrueFalseQuestions()` - 참/거짓 문제 생성
+- `generateApplicationQuestions()` - 응용 문제 생성
+
+### 사전 기능 (app.js)
+- `searchTerms()` - 용어 검색 기능
+- `showSearchResults()` - 검색 결과 표시
+- `getTermIcon()` - 용어별 아이콘 매핑
+- `getTermCategory()` - 용어 카테고리 분류
+
+### 데이터 관리
+- `termsData` - 전역 용어 데이터 배열 (app.js)
+- Google Sheets 연동 함수들 (google-sheets-integration.js)
+
+## 🎨 UI/UX 컴포넌트
+
+### 화면 구성 (index.html)
+- `#home-screen` - 메인 홈 화면
+- `#quiz-screen` - 퀴즈 진행 화면
+- `#dictionary-screen` - 용어 사전 화면
+- `#result-screen` - 퀴즈 결과 화면
+- `#admin-panel` - 관리자 패널 (Google Sheets 연동)
+
+### 스타일 시스템 (style.css)
+- CSS 변수 기반 디자인 시스템
+- 반응형 그리드 레이아웃
+- 다크모드 지원 (`[data-theme="dark"]`)
+- 접근성 기능 (`prefers-reduced-motion`)
+
+## 📊 데이터 구조
+
+### 용어 데이터 형식
+```javascript
+{
+    term: "API",
+    definition: "애플리케이션 프로그래밍 인터페이스",
+    category: "개념",
+    difficulty: "easy"
+}
+```
+
+### 퀴즈 질문 형식
+```javascript
+{
+    type: "multiple-choice",
+    question: "HTML 질문 내용",
+    options: ["선택지1", "선택지2", "선택지3", "선택지4"],
+    correctAnswer: "정답",
+    explanation: "설명"
+}
+```

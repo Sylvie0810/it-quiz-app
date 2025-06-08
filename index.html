@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT 용어 학습 퀴즈</title>
+    
+    <!-- Pretendard 폰트 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    
+    <!-- 접근성 설정 -->
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#3182ce">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 접근성 컨트롤 -->
+    <div class="accessibility-controls">
+        <button class="btn btn--sm btn--outline" id="theme-toggle" aria-label="다크모드 전환">
+            <span class="theme-icon">🌙</span>
+        </button>
+        <button class="btn btn--sm btn--outline" id="motion-toggle" aria-label="모션 감소">
+            <span class="motion-icon">⚡</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- 메인 화면 -->
+        <div id="home-screen" class="screen active">
+            <div class="home-content">
+                <div class="hero-section">
+                    <div class="hero-icon">💻</div>
+                    <h1>IT 용어 학습 퀴즈</h1>
+                    <p class="subtitle">다양한 IT 용어들을 재미있게 학습해보세요!</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="home-terms-count">52</span>
+                            <span class="stat-label">총 용어</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">4</span>
+                            <span class="stat-label">문제 유형</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quiz-types">
+                    <div class="quiz-type-card" data-type="multiple-choice">
+                        <div class="card-icon">📝</div>
+                        <div class="card-content">
+                            <h3>객관식 문제</h3>
+                            <p>용어의 정의를 보고 올바른 용어를 선택하세요</p>
+                            <div class="quiz-meta">
+                                <span class="quiz-count">15문제</span>
+                                <span class="quiz-difficulty easy">쉬움</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">→</div>
+                    </div>
+                    
+                    <div class="quiz-type-card" data-type="short-answer">
+                        <div class="card-icon">✍️</div>
+                        <div class="card-content">
+                            <h3>단답형 문제</h3>
+                            <p>정의를 보고 해당하는 용어를 입력하세요</p>
+                            <div class="quiz-meta">
+                                <span class="quiz-count">12문제</span>
+                                <span class="quiz-difficulty medium">보통</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">→</div>
+                    </div>
+                    
+                    <div class="quiz-type-card" data-type="true-false">
+                        <div class="card-icon">⚖️</div>
+                        <div class="card-content">
+                            <h3>참/거짓 문제</h3>
+                            <p>용어와 정의가 올바르게 연결되었는지 판단하세요</p>
+                            <div class="quiz-meta">
+                                <span class="quiz-count">15문제</span>
+                                <span class="quiz-difficulty easy">쉬움</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">→</div>
+                    </div>
+                    
+                    <div class="quiz-type-card" data-type="application">
+                        <div class="card-icon">🚀</div>
+                        <div class="card-content">
+                            <h3>응용 문제</h3>
+                            <p>실제 상황에서 어떤 용어가 적용되는지 맞춰보세요</p>
+                            <div class="quiz-meta">
+                                <span class="quiz-count">10문제</span>
+                                <span class="quiz-difficulty hard">어려움</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">→</div>
+                    </div>
+
+                    <div class="quiz-type-card" data-type="dictionary">
+                        <div class="card-icon">📚</div>
+                        <div class="card-content">
+                            <h3>IT 용어 사전</h3>
+                            <p>원하는 용어를 검색하여 정의와 설명을 확인하세요</p>
+                            <div class="quiz-meta">
+                                <span class="quiz-count" id="terms-count">52개 용어</span>
+                                <span class="quiz-difficulty easy">검색</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">→</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 퀴즈 화면 -->
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text">1 / 15</span>
+                </div>
+                <button class="btn btn--outline btn--sm" id="home-btn">홈으로</button>
+            </div>
+            
+            <div class="quiz-content">
+                <div class="question-card card">
+                    <div class="card__body">
+                        <h2 id="question-title">객관식 문제</h2>
+                        <div id="question-content"></div>
+                        <div id="answer-options"></div>
+                        <div id="feedback" class="feedback hidden"></div>
+                        <div class="question-actions">
+                            <button class="btn btn--outline" id="prev-btn">이전</button>
+                            <button class="btn btn--primary" id="submit-btn" disabled>답안 제출</button>
+                            <button class="btn btn--secondary hidden" id="next-btn">다음 문제</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 사전 화면 -->
+        <div id="dictionary-screen" class="screen">
+            <div class="dictionary-header">
+                <div class="header-content">
+                    <h2>📚 IT 용어 사전</h2>
+                    <button class="btn btn--outline btn--sm" id="home-dict-btn">홈으로</button>
+                </div>
+            </div>
+            
+            <div class="dictionary-content">
+                <div class="search-section">
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <input 
+                                type="text" 
+                                id="search-input" 
+                                class="search-input" 
+                                placeholder="검색할 용어를 입력하세요 (예: API, React, HTML...)"
+                                autocomplete="off"
+                            >
+                            <button class="search-btn" id="search-btn" aria-label="검색">
+                                🔍
+                            </button>
+                        </div>
+                        <div class="search-suggestions" id="search-suggestions"></div>
+                    </div>
+                </div>
+                
+                <div class="dictionary-results" id="dictionary-results">
+                    <div class="welcome-message">
+                        <div class="welcome-icon">🎯</div>
+                        <h3>IT 용어를 검색해보세요!</h3>
+                        <p><span id="terms-count-welcome">52</span>개의 다양한 IT 용어와 정의를 확인할 수 있습니다.</p>
+                        <div class="popular-terms">
+                            <h4>인기 용어</h4>
+                            <div class="term-tags">
+                                <button class="term-tag" data-term="API">API</button>
+                                <button class="term-tag" data-term="React">React</button>
+                                <button class="term-tag" data-term="JavaScript">JavaScript</button>
+                                <button class="term-tag" data-term="Framework">Framework</button>
+                                <button class="term-tag" data-term="Component">Component</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="search-results hidden" id="search-results">
+                        <div class="results-header">
+                            <span class="results-count" id="results-count">0개 결과</span>
+                        </div>
+                        <div class="results-list" id="results-list"></div>
+                    </div>
+                    
+                    <div class="all-terms hidden" id="all-terms">
+                        <div class="terms-header">
+                            <h3>전체 용어 목록</h3>
+                            <div class="terms-sort">
+                                <button class="sort-btn active" data-sort="alphabetical">가나다순</button>
+                                <button class="sort-btn" data-sort="category">카테고리별</button>
+                            </div>
+                        </div>
+                        <div class="terms-list" id="terms-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div id="result-screen" class="screen">
+            <div class="result-content">
+                <div class="result-card card">
+                    <div class="card__body">
+                        <h2>퀴즈 완료!</h2>
+                        <div class="score-display">
+                            <div class="score-circle">
+                                <span id="score-percentage">0%</span>
+                            </div>
+                            <div class="score-details">
+                                <p><span id="correct-count">0</span>개 정답 / <span id="total-count">0</span>개 문제</p>
+                                <p id="score-message">훌륭합니다!</p>
+                            </div>
+                        </div>
+                        
+                        <div class="result-actions">
+                            <button class="btn btn--primary" id="restart-btn">다시 도전하기</button>
+                            <button class="btn btn--secondary" id="home-result-btn">다른 퀴즈 선택</button>
+                        </div>
+                        
+                        <div class="wrong-answers" id="wrong-answers">
+                            <h3>틀린 문제 복습</h3>
+                            <div id="wrong-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Sheets 연동 버튼 -->
+    <div id="admin-panel" class="admin-panel hidden">
+        <div class="admin-header">
+            <h3>🔧 관리자 패널</h3>
+            <button class="btn btn--sm btn--outline" onclick="toggleAdminPanel()">닫기</button>
+        </div>
+        <div class="admin-content">
+            <div class="admin-section">
+                <h4>📊 Google Sheets 연동</h4>
+                <p class="admin-desc">Google Sheets에서 용어 데이터를 실시간으로 업데이트할 수 있습니다.</p>
+                <div class="admin-buttons">
+                    <button class="btn btn--primary btn--sm" onclick="handleGoogleSheetsUpdate()">
+                        📥 Google Sheets에서 업데이트
+                    </button>
+                    <button class="btn btn--secondary btn--sm" onclick="showGoogleSheetsSetup()">
+                        ⚙️ 설정
+                    </button>
+                </div>
+            </div>
+            
+            <div class="admin-section">
+                <h4>📂 CSV 파일 관리</h4>
+                <p class="admin-desc">CSV 파일을 통해 용어 데이터를 관리할 수 있습니다.</p>
+                <div class="admin-buttons">
+                    <button class="btn btn--outline btn--sm" onclick="GoogleSheetsIntegration.downloadTemplateCSV()">
+                        📄 템플릿 다운로드
+                    </button>
+                    <label class="btn btn--secondary btn--sm file-upload-btn">
+                        📁 CSV 파일 업로드
+                        <input type="file" accept=".csv" onchange="handleCSVUpload(this)" style="display: none;">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 패널 토글 버튼 -->
+    <button id="admin-toggle" class="admin-toggle-btn" onclick="toggleAdminPanel()" title="관리자 패널">
+        🔧
+    </button>
+
+    <script src="google-sheets-integration.js"></script>
+    <script src="app.js"></script>
+    
+    <style>
+    /* 관리자 패널 스타일 */
+    .admin-panel {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--color-card);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-xl);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        width: 90%;
+        max-width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .admin-header h3 {
+        margin: 0;
+        color: var(--color-text);
+        font-size: var(--text-lg);
+    }
+    
+    .admin-content {
+        padding: var(--space-4);
+    }
+    
+    .admin-section {
+        margin-bottom: var(--space-6);
+    }
+    
+    .admin-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .admin-section h4 {
+        margin: 0 0 var(--space-2) 0;
+        color: var(--color-text);
+        font-size: var(--text-base);
+        font-weight: var(--font-weight-semibold);
+    }
+    
+    .admin-desc {
+        margin: 0 0 var(--space-3) 0;
+        color: var(--color-text-secondary);
+        font-size: var(--text-sm);
+        line-height: 1.5;
+    }
+    
+    .admin-buttons {
+        display: flex;
+        gap: var(--space-2);
+        flex-wrap: wrap;
+    }
+    
+    .admin-toggle-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border: none;
+        border-radius: 50%;
+        background: var(--color-primary);
+        color: white;
+        font-size: 1.25rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all var(--duration-normal) var(--ease-out);
+        z-index: 9999;
+    }
+    
+    .admin-toggle-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .file-upload-btn {
+        position: relative;
+        cursor: pointer;
+    }
+    
+    /* 반응형 */
+    @media (max-width: 768px) {
+        .admin-panel {
+            width: 95%;
+            margin: 0;
+        }
+        
+        .admin-buttons {
+            flex-direction: column;
+        }
+        
+        .admin-toggle-btn {
+            bottom: 15px;
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            font-size: 1.125rem;
+        }
+    }
+    </style>
+    
+    <script>
+    // 관리자 패널 토글
+    function toggleAdminPanel() {
+        const panel = document.getElementById('admin-panel');
+        
+        // 간단한 비밀번호 확인
+        if (panel.classList.contains('hidden')) {
+            const password = prompt('관리자 비밀번호를 입력하세요:');
+            if (password !== 'admin123') {
+                alert('잘못된 비밀번호입니다.');
+                return;
+            }
+        }
+        
+        panel.classList.toggle('hidden');
+    }
+    
+    // Google Sheets 업데이트 처리 (설정 확인 포함)
+    async function handleGoogleSheetsUpdate() {
+        console.log('🔴 handleGoogleSheetsUpdate 함수가 호출되었습니다!');
+        try {
+            await GoogleSheetsIntegration.updateTermsFromGoogleSheets();
+        } catch (error) {
+            if (error.message.includes('설정되지 않았습니다')) {
+                const confirmSetup = confirm(`❌ Google Sheets 연동이 설정되지 않았습니다.\n\n설정 방법을 확인하시겠습니까?`);
+                if (confirmSetup) {
+                    showGoogleSheetsSetup();
+                }
+            } else {
+                alert('❌ Google Sheets 업데이트 실패: ' + error.message);
+            }
+        }
+    }
+    
+    // CSV 파일 업로드 처리
+    async function handleCSVUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+        
+        try {
+            const data = await GoogleSheetsIntegration.loadFromCSVFile(file);
+            
+            // 기존 데이터 업데이트
+            if (typeof termsData !== 'undefined') {
+                termsData.length = 0;
+                termsData.push(...data);
+                
+                console.log(`${data.length}개의 용어가 CSV에서 로드되었습니다.`);
+                
+                // 사전 화면 새로고침
+                if (document.getElementById('dictionary-screen').classList.contains('active')) {
+                    showWelcomeMessage();
+                }
+                
+                alert(`✅ ${data.length}개의 용어가 성공적으로 업로드되었습니다!`);
+            }
+        } catch (error) {
+            console.error('CSV 업로드 실패:', error);
+            alert('❌ CSV 파일 업로드에 실패했습니다: ' + error.message);
+        }
+        
+        // 파일 입력 초기화
+        input.value = '';
+    }
+    
+    // Google Sheets 설정 모달
+    function showGoogleSheetsSetup() {
+        const setup = `
+🔗 Google Sheets 연동 설정 방법:
+
+1. Google Cloud Console (console.cloud.google.com) 접속
+2. 새 프로젝트 생성 또는 기존 프로젝트 선택
+3. Google Sheets API 활성화
+4. API 키 생성 (제한 설정: Google Sheets API만)
+5. Google Sheets 문서 생성
+6. 문서를 "누구나 링크가 있으면 볼 수 있음"으로 공유
+7. 스프레드시트 URL에서 ID 추출
+
+📋 스프레드시트 형식:
+A열: 용어
+B열: 정의  
+C열: 카테고리
+D열: 난이도 (easy/medium/hard)
+
+⚙️ 설정 파일: google-sheets-integration.js
+- API_KEY: 생성한 API 키
+- SHEET_ID: 스프레드시트 ID
+- SHEET_NAME: 시트 이름 (기본: 'IT용어데이터')
+        `;
+        
+        alert(setup);
+    }
+    </script>
+</body>
+</html>

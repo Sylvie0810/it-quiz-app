@@ -1,0 +1,344 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# 기능 구현 및 확장 가이드
+
+## 🎯 퀴즈 시스템 확장
+
+### 새로운 퀴즈 유형 추가 단계
+
+1. **함수 생성** ([app.js](mdc:app.js))
+```javascript
+function generateNewQuizType() {
+    const questions = [];
+    const selectedTerms = getRandomItems(termsData, 10);
+    
+    selectedTerms.forEach(term => {
+        const icon = getTermIcon(term.term);
+        
+        questions.push({
+            type: 'new-quiz-type',
+            question: `새로운 형식의 질문...`,
+            correctAnswer: term.term,
+            explanation: `설명...`
+        });
+    });
+    
+    return questions;
+}
+```
+
+2. **UI 컴포넌트 추가** ([index.html](mdc:index.html))
+```html
+<div class="quiz-type-card" data-type="new-quiz-type">
+    <div class="card-icon">🆕</div>
+    <div class="card-content">
+        <h3>새로운 퀴즈 유형</h3>
+        <p>새로운 방식의 퀴즈 설명</p>
+        <div class="quiz-meta">
+            <span class="quiz-count">10문제</span>
+            <span class="quiz-difficulty medium">보통</span>
+        </div>
+    </div>
+    <div class="card-arrow">→</div>
+</div>
+```
+
+3. **스타일 정의** ([style.css](mdc:style.css))
+```css
+.new-quiz-specific-style {
+    /* 새로운 퀴즈 유형 전용 스타일 */
+}
+```
+
+4. **시작 로직 연결** ([app.js](mdc:app.js))
+```javascript
+function startQuiz(type) {
+    // 기존 코드...
+    switch (type) {
+        case 'new-quiz-type':
+            currentQuestions = generateNewQuizType();
+            break;
+        // 기존 케이스들...
+    }
+}
+```
+
+## 📚 사전 기능 확장
+
+### 새로운 검색 필터 추가
+
+1. **필터 함수 구현** ([app.js](mdc:app.js))
+```javascript
+function filterByDifficulty(terms, difficulty) {
+    return terms.filter(term => 
+        !difficulty || getTermDifficulty(term) === difficulty
+    );
+}
+
+function filterByCategory(terms, category) {
+    return terms.filter(term => 
+        !category || getTermCategory(term.term) === category
+    );
+}
+```
+
+2. **UI 컨트롤 추가** ([index.html](mdc:index.html))
+```html
+<div class="filter-controls">
+    <select id="category-filter">
+        <option value="">모든 카테고리</option>
+        <option value="개념">개념</option>
+        <option value="언어">언어</option>
+    </select>
+    <select id="difficulty-filter">
+        <option value="">모든 난이도</option>
+        <option value="easy">쉬움</option>
+        <option value="medium">보통</option>
+        <option value="hard">어려움</option>
+    </select>
+</div>
+```
+
+### 새로운 용어 카테고리 추가
+
+**[app.js](mdc:app.js)**의 `getTermCategory()` 함수 수정:
+```javascript
+function getTermCategory(term) {
+    const categories = {
+        // 기존 카테고리들...
+        'blockchain': '블록체인',
+        'ai': '인공지능',
+        'cloud': '클라우드',
+        // 새 카테고리 추가
+    };
+    
+    // 검색 로직...
+}
+```
+
+**[app.js](mdc:app.js)**의 `getTermIcon()` 함수에 아이콘 추가:
+```javascript
+function getTermIcon(term) {
+    const icons = {
+        // 기존 아이콘들...
+        'Blockchain': '⛓️',
+        'AI': '🤖',
+        'Cloud': '☁️',
+        // 새 아이콘 추가
+    };
+}
+```
+
+## 🔗 Google Sheets 연동 확장
+
+### 다중 시트 지원
+
+**[google-sheets-integration.js](mdc:google-sheets-integration.js)** 확장:
+```javascript
+const MULTI_SHEET_CONFIG = {
+    sheets: [
+        { name: 'IT용어데이터', range: 'A:D' },
+        { name: '고급용어', range: 'A:D' },
+        { name: '기초용어', range: 'A:D' }
+    ]
+};
+
+async function fetchFromMultipleSheets() {
+    const allData = [];
+    
+    for (const sheet of MULTI_SHEET_CONFIG.sheets) {
+        const sheetData = await fetchDataFromSheet(sheet.name, sheet.range);
+        allData.push(...sheetData);
+    }
+    
+    return allData;
+}
+```
+
+### 자동 갱신 스케줄링
+
+```javascript
+// 페이지 로드 시 자동 설정
+document.addEventListener('DOMContentLoaded', () => {
+    // 30분마다 자동 업데이트
+    GoogleSheetsIntegration.setupAutoUpdate(30);
+});
+```
+
+## 🎨 테마 및 스타일 확장
+
+### 새로운 색상 테마 추가
+
+**[style.css](mdc:style.css)**에 새 테마 추가:
+```css
+[data-theme="blue"] {
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-background: #eff6ff;
+    --color-text: #1e3a8a;
+}
+
+[data-theme="green"] {
+    --color-primary: #059669;
+    --color-primary-hover: #047857;
+    --color-background: #ecfdf5;
+    --color-text: #064e3b;
+}
+```
+
+### 다국어 지원 준비
+
+**[app.js](mdc:app.js)**에 다국어 객체 추가:
+```javascript
+const i18n = {
+    ko: {
+        quiz_title: 'IT 용어 학습 퀴즈',
+        dictionary_title: 'IT 용어 사전',
+        search_placeholder: '검색할 용어를 입력하세요...'
+    },
+    en: {
+        quiz_title: 'IT Terms Learning Quiz',
+        dictionary_title: 'IT Terms Dictionary',
+        search_placeholder: 'Enter term to search...'
+    }
+};
+```
+
+## 📊 분석 및 통계 기능
+
+### 학습 진도 추적
+
+```javascript
+const learningProgress = {
+    completedQuizzes: [],
+    scores: [],
+    learnedTerms: new Set(),
+    
+    addQuizResult(type, score, totalQuestions) {
+        this.completedQuizzes.push({
+            type,
+            score,
+            totalQuestions,
+            date: new Date(),
+            percentage: Math.round((score / totalQuestions) * 100)
+        });
+        
+        // 로컬 스토리지에 저장
+        localStorage.setItem('learningProgress', JSON.stringify(this));
+    }
+};
+```
+
+### 사용자 통계 화면
+
+**[index.html](mdc:index.html)**에 통계 화면 추가:
+```html
+<div id="statistics-screen" class="screen">
+    <div class="stats-header">
+        <h2>📊 학습 통계</h2>
+    </div>
+    <div class="stats-content">
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-value" id="total-quizzes">0</div>
+                <div class="stat-label">완료한 퀴즈</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="average-score">0%</div>
+                <div class="stat-label">평균 점수</div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+## 🔧 성능 최적화 기법
+
+### 가상 스크롤링 (대량 데이터용)
+
+```javascript
+class VirtualScroll {
+    constructor(container, itemHeight, items) {
+        this.container = container;
+        this.itemHeight = itemHeight;
+        this.items = items;
+        this.visibleStart = 0;
+        this.visibleEnd = 0;
+        
+        this.init();
+    }
+    
+    init() {
+        this.container.addEventListener('scroll', () => {
+            this.updateVisibleItems();
+        });
+    }
+    
+    updateVisibleItems() {
+        const scrollTop = this.container.scrollTop;
+        const containerHeight = this.container.clientHeight;
+        
+        this.visibleStart = Math.floor(scrollTop / this.itemHeight);
+        this.visibleEnd = Math.min(
+            this.visibleStart + Math.ceil(containerHeight / this.itemHeight) + 1,
+            this.items.length
+        );
+        
+        this.render();
+    }
+}
+```
+
+### 이미지 레이지 로딩
+
+```javascript
+const imageObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            img.classList.remove('lazy');
+            imageObserver.unobserve(img);
+        }
+    });
+});
+
+// 사용법
+document.querySelectorAll('img[data-src]').forEach(img => {
+    imageObserver.observe(img);
+});
+```
+
+## 🧪 테스트 및 디버깅
+
+### 개발 모드 디버깅
+
+```javascript
+const DEBUG_MODE = window.location.search.includes('debug=true');
+
+function debugLog(message, data = null) {
+    if (DEBUG_MODE) {
+        console.log(`[DEBUG] ${message}`, data);
+    }
+}
+
+// 사용법
+debugLog('퀴즈 데이터 로드됨', currentQuestions);
+```
+
+### 에러 추적
+
+```javascript
+window.addEventListener('error', (event) => {
+    console.error('전역 에러 발생:', {
+        message: event.message,
+        filename: event.filename,
+        line: event.lineno,
+        column: event.colno,
+        error: event.error
+    });
+});
+```
