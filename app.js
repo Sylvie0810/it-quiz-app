@@ -296,14 +296,11 @@ function initializeAccessibility() {
         if (themeToggle) themeToggle.textContent = '🌙';
     }
     
-    // 모션 감소 설정
-    const motionToggle = document.getElementById('motion-toggle');
+    // 모션 감소 설정 (간소화 - 토글 버튼 제거됨)
     if (isMotionReduced) {
         document.documentElement.setAttribute('data-motion', 'reduced');
-        if (motionToggle) motionToggle.textContent = '🐌';
     } else {
         document.documentElement.removeAttribute('data-motion');
-        if (motionToggle) motionToggle.textContent = '⚡';
     }
 }
 
@@ -322,20 +319,7 @@ function toggleTheme() {
     }
 }
 
-// 모션 감소 토글
-function toggleMotion() {
-    isMotionReduced = !isMotionReduced;
-    localStorage.setItem('motionReduced', isMotionReduced);
-    
-    const motionToggle = document.getElementById('motion-toggle');
-    if (isMotionReduced) {
-        document.documentElement.setAttribute('data-motion', 'reduced');
-        if (motionToggle) motionToggle.textContent = '🐌';
-    } else {
-        document.documentElement.removeAttribute('data-motion');
-        if (motionToggle) motionToggle.textContent = '⚡';
-    }
-}
+// 모션 감소 토글 (함수 제거됨 - 토글 버튼이 제거되어 더 이상 사용되지 않음)
 
 // 🎯 UX 개선: 문제 유형별 제목과 서브타이틀
 function getQuestionTypeTitle(type) {
@@ -1494,12 +1478,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 초기 용어 개수 업데이트
     updateTermsCount();
     
-    // 접근성 컨트롤 이벤트
+    // 접근성 컨트롤 이벤트 (motion-toggle 제거됨)
     const themeToggle = document.getElementById('theme-toggle');
-    const motionToggle = document.getElementById('motion-toggle');
     
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-    if (motionToggle) motionToggle.addEventListener('click', toggleMotion);
     
     // 퀴즈 유형 선택
     document.querySelectorAll('.quiz-type-card').forEach(card => {

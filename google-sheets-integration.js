@@ -365,10 +365,8 @@ function initializeTermsData() {
                 updateTermsCount();
             }
             
-            // 저장된 데이터 사용 중임을 알림 (3초 후 자동 숨김)
-            setTimeout(() => {
-                showUpdateNotification('📱 저장된 Google Sheets 데이터를 사용 중입니다.', 'success');
-            }, 1000);
+            // 저장된 데이터 사용 중임을 콘솔에만 로그 (알림 제거)
+            console.log('📱 저장된 Google Sheets 데이터를 사용 중입니다.');
         }
     } else {
         console.log('💡 저장된 데이터가 없어 원본 데이터를 사용합니다.');

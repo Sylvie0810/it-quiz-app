@@ -1622,10 +1622,10 @@ body:has(#dictionary-screen.active) .accessibility-controls {
     margin-bottom: 10px !important;
 }
 
-/* 퀴즈 푸터 - 바닥에 고정 */
+/* 퀴즈 푸터 - 바닥에 고정, 한 줄로 배치 */
 .quiz-footer {
     display: flex !important;
-    justify-content: space-between !important;
+    justify-content: center !important;
     align-items: center !important;
     margin-top: auto !important;
     padding-top: 10px !important;
@@ -1633,8 +1633,9 @@ body:has(#dictionary-screen.active) .accessibility-controls {
 }
 
 .quiz-controls {
-    display: flex;
-    gap: 8px;
+    display: flex !important;
+    gap: 12px !important;
+    align-items: center !important;
 }
 
 .control-btn {
@@ -1688,6 +1689,40 @@ body:has(#dictionary-screen.active) .accessibility-controls {
     margin: 0;
     font-size: 0.9rem;
     line-height: 1.4;
+}
+
+/* 관리자 패널 버튼을 매우 작고 눈에 안 띄게 */
+.admin-tiny-btn {
+    position: fixed !important;
+    bottom: 5px !important;
+    right: 5px !important;
+    width: 20px !important;
+    height: 20px !important;
+    padding: 0 !important;
+    font-size: 10px !important;
+    border-radius: 50% !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: rgba(0, 0, 0, 0.3) !important;
+    z-index: 1000 !important;
+    transition: all 0.2s ease !important;
+}
+
+.admin-tiny-btn:hover {
+    background: rgba(0, 0, 0, 0.2) !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+    transform: scale(1.1) !important;
+}
+
+[data-theme="dark"] .admin-tiny-btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.3) !important;
+}
+
+[data-theme="dark"] .admin-tiny-btn:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
 }
 
 /* 모바일 최적화 - 극도로 컴팩트한 레이아웃 */
@@ -1758,13 +1793,12 @@ body:has(#dictionary-screen.active) .accessibility-controls {
     
     .quiz-footer {
         padding-top: 8px !important;
-        flex-direction: column-reverse !important;
+        justify-content: center !important;
         gap: 8px !important;
     }
     
     .quiz-controls {
-        align-self: center !important;
-        gap: 6px !important;
+        gap: 8px !important;
     }
     
     .control-btn {
@@ -1789,5 +1823,13 @@ body:has(#dictionary-screen.active) .accessibility-controls {
     .feedback h4 {
         font-size: 0.9rem !important;
         margin-bottom: 4px !important;
+    }
+    
+    .admin-tiny-btn {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 9px !important;
+        bottom: 3px !important;
+        right: 3px !important;
     }
 }
