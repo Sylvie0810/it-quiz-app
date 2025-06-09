@@ -1560,10 +1560,7 @@ body {
 
 /* 🎯 UX 개선: 공간 효율적인 퀴즈 레이아웃 */
 
-/* 디버깅: CSS 로드 확인용 */
-#quiz-screen .quiz-container {
-    border: 2px solid red !important;
-}
+/* 디버깅용 스타일 제거됨 */
 
 /* 퀴즈 화면에서 관리자 패널 숨기기 */
 body:has(#quiz-screen.active) .accessibility-controls,
@@ -1581,7 +1578,7 @@ body:has(#dictionary-screen.active) .accessibility-controls {
 .quiz-container {
     max-width: 900px !important;
     margin: 0 auto !important;
-    padding: 15px !important;
+    padding: 10px !important;
     height: 100vh !important;
     display: flex !important;
     flex-direction: column !important;
@@ -1593,8 +1590,8 @@ body:has(#dictionary-screen.active) .accessibility-controls {
 .question-header {
     display: flex !important;
     align-items: baseline !important;
-    gap: 15px !important;
-    margin-bottom: 15px !important;
+    gap: 10px !important;
+    margin-bottom: 10px !important;
     flex-wrap: wrap !important;
 }
 
@@ -1614,25 +1611,25 @@ body:has(#dictionary-screen.active) .accessibility-controls {
 
 /* 간격 최적화 */
 .question-content {
-    margin-bottom: 15px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    margin-bottom: 10px !important;
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
 }
 
 .answer-options {
-    margin-bottom: 15px;
+    margin-bottom: 10px !important;
 }
 
 /* 퀴즈 푸터 - 바닥에 고정 */
 .quiz-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
-    padding-top: 15px;
-    border-top: 1px solid var(--color-border);
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-top: auto !important;
+    padding-top: 10px !important;
+    border-top: 1px solid var(--color-border) !important;
 }
 
 .quiz-controls {
@@ -1693,35 +1690,104 @@ body:has(#dictionary-screen.active) .accessibility-controls {
     line-height: 1.4;
 }
 
-/* 모바일 최적화 */
+/* 모바일 최적화 - 극도로 컴팩트한 레이아웃 */
 @media (max-width: 768px) {
     .quiz-container {
-        padding: 12px;
-        height: 100vh;
+        padding: 5px !important;
+        height: 100vh !important;
     }
     
     .question-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-        margin-bottom: 12px;
+        gap: 5px !important;
+        margin-bottom: 8px !important;
     }
     
     .question-type {
-        font-size: 1.3rem;
+        font-size: 1.1rem !important;
     }
     
     .question-subtitle {
-        font-size: 0.9rem;
+        font-size: 0.85rem !important;
+    }
+    
+    .question-content {
+        margin-bottom: 8px !important;
+    }
+    
+    .definition-box {
+        padding: 8px !important;
+        margin: 6px 0 !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .answer-options {
+        margin-bottom: 8px !important;
+    }
+    
+    .answer-options .option {
+        padding: 6px 10px !important;
+        margin-bottom: 4px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .text-input {
+        padding: 6px 10px !important;
+        font-size: 0.9rem !important;
+        margin: 6px 0 !important;
+    }
+    
+    .tf-buttons {
+        gap: 6px !important;
+        margin: 6px 0 !important;
+    }
+    
+    .tf-button {
+        padding: 6px 12px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .category-hint {
+        font-size: 0.8rem !important;
+        margin-bottom: 6px !important;
+    }
+    
+    .term-definition-pair {
+        margin: 6px 0 !important;
+        gap: 6px !important;
     }
     
     .quiz-footer {
-        padding-top: 12px;
-        flex-direction: column-reverse;
-        gap: 12px;
+        padding-top: 8px !important;
+        flex-direction: column-reverse !important;
+        gap: 8px !important;
     }
     
     .quiz-controls {
-        align-self: center;
+        align-self: center !important;
+        gap: 6px !important;
+    }
+    
+    .control-btn {
+        padding: 6px 10px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .quiz-progress {
+        margin-bottom: 8px !important;
+    }
+    
+    .progress-text {
+        font-size: 0.8rem !important;
+    }
+    
+    .feedback {
+        padding: 8px 10px !important;
+        margin: 6px 0 !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .feedback h4 {
+        font-size: 0.9rem !important;
+        margin-bottom: 4px !important;
     }
 }

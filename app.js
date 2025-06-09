@@ -621,14 +621,8 @@ function generateMultipleChoiceQuestions() {
         
         questions.push({
             type: 'multiple-choice',
-            question: `<div class="question-header">
-                <div class="question-icon">${icon}</div>
-                <div class="question-content">
-                    <h3 class="question-title">다음 정의에 해당하는 용어는 무엇입니까?</h3>
-                    <div class="definition-box">
-                        <div class="definition-text">${term.definition}</div>
-                    </div>
-                </div>
+            question: `<div class="definition-box">
+                <div class="definition-text">${term.definition}</div>
             </div>`,
             options: options,
             correctAnswer: term.term,
@@ -650,15 +644,9 @@ function generateShortAnswerQuestions() {
         
         questions.push({
             type: 'short-answer',
-            question: `<div class="question-header">
-                <div class="question-icon">${icon}</div>
-                <div class="question-content">
-                    <h3 class="question-title">다음 정의에 해당하는 용어를 입력하세요</h3>
-                    <div class="category-hint">카테고리: ${category}</div>
-                    <div class="definition-box">
-                        <div class="definition-text">${term.definition}</div>
-                    </div>
-                </div>
+            question: `<div class="category-hint">카테고리: ${category}</div>
+            <div class="definition-box">
+                <div class="definition-text">${term.definition}</div>
             </div>`,
             correctAnswer: termName, // 짧은 형태의 용어명을 정답으로 설정
             fullTerm: term.term, // 전체 용어는 별도로 보관
@@ -679,20 +667,12 @@ function generateTrueFalseQuestions() {
         
         questions.push({
             type: 'true-false',
-            question: `<div class="question-header">
-                <div class="question-icon">${icon}</div>
-                <div class="question-content">
-                    <h3 class="question-title">다음 용어와 정의가 올바르게 연결되었습니까?</h3>
-                    <div class="term-definition-pair">
-                        <div class="term-label">
-                            <span class="label-icon">🏷️</span>
-                            <strong>용어:</strong> ${term.term}
-                        </div>
-                        <div class="definition-label">
-                            <span class="label-icon">📝</span>
-                            <strong>정의:</strong> ${term.definition}
-                        </div>
-                    </div>
+            question: `<div class="term-definition-pair">
+                <div class="term-label">
+                    <strong>용어:</strong> ${term.term}
+                </div>
+                <div class="definition-label">
+                    <strong>정의:</strong> ${term.definition}
                 </div>
             </div>`,
             correctAnswer: true,
@@ -717,20 +697,12 @@ function generateTrueFalseQuestions() {
         
         questions.push({
             type: 'true-false',
-            question: `<div class="question-header">
-                <div class="question-icon">${icon}</div>
-                <div class="question-content">
-                    <h3 class="question-title">다음 용어와 정의가 올바르게 연결되었습니까?</h3>
-                    <div class="term-definition-pair">
-                        <div class="term-label">
-                            <span class="label-icon">🏷️</span>
-                            <strong>용어:</strong> ${term.term}
-                        </div>
-                        <div class="definition-label">
-                            <span class="label-icon">📝</span>
-                            <strong>정의:</strong> ${wrongDefinition}
-                        </div>
-                    </div>
+            question: `<div class="term-definition-pair">
+                <div class="term-label">
+                    <strong>용어:</strong> ${term.term}
+                </div>
+                <div class="definition-label">
+                    <strong>정의:</strong> ${wrongDefinition}
                 </div>
             </div>`,
             correctAnswer: false,
