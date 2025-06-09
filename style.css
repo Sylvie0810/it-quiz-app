@@ -1691,38 +1691,39 @@ body:has(#dictionary-screen.active) .accessibility-controls {
     line-height: 1.4;
 }
 
-/* 관리자 패널 버튼을 매우 작고 눈에 안 띄게 */
+/* 관리자 패널 버튼을 극도로 작고 투명하게 */
 .admin-tiny-btn {
     position: fixed !important;
-    bottom: 5px !important;
-    right: 5px !important;
-    width: 20px !important;
-    height: 20px !important;
+    bottom: 3px !important;
+    right: 3px !important;
+    width: 12px !important;
+    height: 12px !important;
     padding: 0 !important;
-    font-size: 10px !important;
+    font-size: 8px !important;
     border-radius: 50% !important;
-    background: rgba(0, 0, 0, 0.1) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    color: rgba(0, 0, 0, 0.3) !important;
+    background: transparent !important;
+    border: none !important;
+    color: rgba(0, 0, 0, 0.15) !important;
     z-index: 1000 !important;
     transition: all 0.2s ease !important;
+    cursor: pointer !important;
 }
 
 .admin-tiny-btn:hover {
-    background: rgba(0, 0, 0, 0.2) !important;
-    color: rgba(0, 0, 0, 0.6) !important;
-    transform: scale(1.1) !important;
+    background: transparent !important;
+    color: rgba(0, 0, 0, 0.4) !important;
+    transform: scale(1.2) !important;
 }
 
 [data-theme="dark"] .admin-tiny-btn {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: rgba(255, 255, 255, 0.3) !important;
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.15) !important;
 }
 
 [data-theme="dark"] .admin-tiny-btn:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: rgba(255, 255, 255, 0.6) !important;
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.4) !important;
 }
 
 /* 모바일 최적화 - 극도로 컴팩트한 레이아웃 */
@@ -1826,10 +1827,10 @@ body:has(#dictionary-screen.active) .accessibility-controls {
     }
     
     .admin-tiny-btn {
-        width: 18px !important;
-        height: 18px !important;
-        font-size: 9px !important;
-        bottom: 3px !important;
-        right: 3px !important;
+        width: 10px !important;
+        height: 10px !important;
+        font-size: 7px !important;
+        bottom: 2px !important;
+        right: 2px !important;
     }
 }
