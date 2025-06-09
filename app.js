@@ -179,9 +179,7 @@ const termsList = document.getElementById('terms-list');
 const termTags = document.querySelectorAll('.term-tag');
 const sortBtns = document.querySelectorAll('.sort-btn');
 
-// 접근성 컨트롤 요소
-const themeToggle = document.getElementById('theme-toggle');
-const motionToggle = document.getElementById('motion-toggle');
+// 접근성 컨트롤 요소는 함수 내에서 동적으로 가져옴
 
 // 접근성 설정
 let isDarkMode = localStorage.getItem('darkMode') === 'true' || 
@@ -289,21 +287,23 @@ function getTermCategory(term) {
 // 접근성 초기화
 function initializeAccessibility() {
     // 다크모드 설정
+    const themeToggle = document.getElementById('theme-toggle');
     if (isDarkMode) {
         document.documentElement.setAttribute('data-theme', 'dark');
-        themeToggle.querySelector('.theme-icon').textContent = '☀️';
+        if (themeToggle) themeToggle.textContent = '☀️';
     } else {
         document.documentElement.removeAttribute('data-theme');
-        themeToggle.querySelector('.theme-icon').textContent = '🌙';
+        if (themeToggle) themeToggle.textContent = '🌙';
     }
     
     // 모션 감소 설정
+    const motionToggle = document.getElementById('motion-toggle');
     if (isMotionReduced) {
         document.documentElement.setAttribute('data-motion', 'reduced');
-        motionToggle.querySelector('.motion-icon').textContent = '🐌';
+        if (motionToggle) motionToggle.textContent = '🐌';
     } else {
         document.documentElement.removeAttribute('data-motion');
-        motionToggle.querySelector('.motion-icon').textContent = '⚡';
+        if (motionToggle) motionToggle.textContent = '⚡';
     }
 }
 
@@ -312,12 +312,13 @@ function toggleTheme() {
     isDarkMode = !isDarkMode;
     localStorage.setItem('darkMode', isDarkMode);
     
+    const themeToggle = document.getElementById('theme-toggle');
     if (isDarkMode) {
         document.documentElement.setAttribute('data-theme', 'dark');
-        themeToggle.querySelector('.theme-icon').textContent = '☀️';
+        if (themeToggle) themeToggle.textContent = '☀️';
     } else {
         document.documentElement.removeAttribute('data-theme');
-        themeToggle.querySelector('.theme-icon').textContent = '🌙';
+        if (themeToggle) themeToggle.textContent = '🌙';
     }
 }
 
@@ -326,12 +327,13 @@ function toggleMotion() {
     isMotionReduced = !isMotionReduced;
     localStorage.setItem('motionReduced', isMotionReduced);
     
+    const motionToggle = document.getElementById('motion-toggle');
     if (isMotionReduced) {
         document.documentElement.setAttribute('data-motion', 'reduced');
-        motionToggle.querySelector('.motion-icon').textContent = '🐌';
+        if (motionToggle) motionToggle.textContent = '🐌';
     } else {
         document.documentElement.removeAttribute('data-motion');
-        motionToggle.querySelector('.motion-icon').textContent = '⚡';
+        if (motionToggle) motionToggle.textContent = '⚡';
     }
 }
 
@@ -1521,8 +1523,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTermsCount();
     
     // 접근성 컨트롤 이벤트
-    themeToggle.addEventListener('click', toggleTheme);
-    motionToggle.addEventListener('click', toggleMotion);
+    const themeToggle = document.getElementById('theme-toggle');
+    const motionToggle = document.getElementById('motion-toggle');
+    
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+    if (motionToggle) motionToggle.addEventListener('click', toggleMotion);
     
     // 퀴즈 유형 선택
     document.querySelectorAll('.quiz-type-card').forEach(card => {
