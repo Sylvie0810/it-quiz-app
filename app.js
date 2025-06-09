@@ -370,9 +370,28 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-function getRandomItems(array, count) {
-    const shuffled = shuffleArray(array);
+function getRandomItems(array, count, seed) {
+    // 시드가 제공되면 시드 기반 랜덤, 아니면 일반 랜덤
+    const shuffled = seed ? shuffleArrayWithSeed(array, seed) : shuffleArray(array);
     return shuffled.slice(0, count);
+}
+
+// 시드 기반 셔플 함수 (매번 다른 문제 생성을 위해)
+function shuffleArrayWithSeed(array, seed) {
+    const shuffled = [...array];
+    let currentSeed = seed;
+    
+    // 간단한 선형 합동 생성기 (Linear Congruential Generator)
+    function seededRandom() {
+        currentSeed = (currentSeed * 1664525 + 1013904223) % 4294967296;
+        return currentSeed / 4294967296;
+    }
+    
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(seededRandom() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
 }
 
 function normalizeText(text) {
@@ -575,7 +594,9 @@ function isAnswerCorrect(userAnswer, correctAnswer, fullTerm) {
 // 문제 생성 함수들
 function generateMultipleChoiceQuestions() {
     const questions = [];
-    const selectedTerms = getRandomItems(termsData, 15);
+    // 매번 다른 문제를 위한 시드 생성 (현재 시간 + 랜덤)
+    const seed = Date.now() + Math.floor(Math.random() * 1000);
+    const selectedTerms = getRandomItems(termsData, 15, seed);
     
     selectedTerms.forEach(term => {
         // 비슷한 카테고리나 관련된 용어들을 우선 선택
@@ -590,13 +611,13 @@ function generateMultipleChoiceQuestions() {
         
         let wrongOptions;
         if (relatedTerms.length >= 3) {
-            wrongOptions = getRandomItems(relatedTerms, 3).map(t => t.term);
+            wrongOptions = getRandomItems(relatedTerms, 3, seed + term.term.length).map(t => t.term);
         } else {
             // 관련 용어가 부족하면 일반 용어로 채움
             const remainingTerms = termsData.filter(t => t.term !== term.term);
             wrongOptions = [
                 ...relatedTerms.map(t => t.term),
-                ...getRandomItems(remainingTerms.filter(t => !relatedTerms.some(rt => rt.term === t.term)), 3 - relatedTerms.length).map(t => t.term)
+                ...getRandomItems(remainingTerms.filter(t => !relatedTerms.some(rt => rt.term === t.term)), 3 - relatedTerms.length, seed + term.term.length + 50).map(t => t.term)
             ];
         }
         
@@ -619,7 +640,9 @@ function generateMultipleChoiceQuestions() {
 
 function generateShortAnswerQuestions() {
     const questions = [];
-    const selectedTerms = getRandomItems(termsData, 12);
+    // 매번 다른 문제를 위한 시드 생성
+    const seed = Date.now() + Math.floor(Math.random() * 1000);
+    const selectedTerms = getRandomItems(termsData, 12, seed);
     
     selectedTerms.forEach(term => {
         const icon = getTermIcon(term.term);
@@ -643,7 +666,9 @@ function generateShortAnswerQuestions() {
 
 function generateTrueFalseQuestions() {
     const questions = [];
-    const selectedTerms = getRandomItems(termsData, 10);
+    // 매번 다른 문제를 위한 시드 생성
+    const seed = Date.now() + Math.floor(Math.random() * 1000);
+    const selectedTerms = getRandomItems(termsData, 10, seed);
     
     // 정답 문제
     selectedTerms.forEach(term => {
@@ -665,7 +690,7 @@ function generateTrueFalseQuestions() {
     });
     
     // 오답 문제 - 비슷한 카테고리의 정의를 사용
-    const wrongTerms = getRandomItems(termsData, 5);
+    const wrongTerms = getRandomItems(termsData, 5, seed + 100);
     wrongTerms.forEach(term => {
         const category = getTermCategory(term.term);
         const relatedTerms = termsData.filter(t => 
@@ -674,8 +699,8 @@ function generateTrueFalseQuestions() {
         );
         
         const wrongDefinition = relatedTerms.length > 0 
-            ? getRandomItems(relatedTerms, 1)[0].definition
-            : getRandomItems(termsData.filter(t => t.term !== term.term), 1)[0].definition;
+            ? getRandomItems(relatedTerms, 1, seed + term.term.length)[0].definition
+            : getRandomItems(termsData.filter(t => t.term !== term.term), 1, seed + term.term.length)[0].definition;
         
         const icon = getTermIcon(term.term);
         
@@ -698,6 +723,9 @@ function generateTrueFalseQuestions() {
 }
 
 function generateApplicationQuestions() {
+    // 매번 다른 문제를 위한 시드 생성
+    const seed = Date.now() + Math.floor(Math.random() * 1000);
+    
     const applicationExamples = [
         {
             term: "API (Application Programming Interface)",
@@ -751,7 +779,9 @@ function generateApplicationQuestions() {
         }
     ];
     
-    return applicationExamples.map(example => {
+    // 응용 문제도 랜덤하게 섞어서 반환 (10개 중 랜덤하게 선택)
+    const shuffledExamples = shuffleArrayWithSeed(applicationExamples, seed);
+    return shuffledExamples.map(example => {
         const termName = example.term.split(' (')[0]; // 괄호 안의 설명 제거
         const icon = getTermIcon(example.term);
         

@@ -1691,39 +1691,58 @@ body:has(#dictionary-screen.active) .accessibility-controls {
     line-height: 1.4;
 }
 
-/* 관리자 패널 버튼을 극도로 작고 투명하게 */
-.admin-tiny-btn {
+/* 관리자 패널 버튼을 거의 보이지 않게 */
+#admin-toggle.admin-tiny-btn {
     position: fixed !important;
-    bottom: 3px !important;
-    right: 3px !important;
-    width: 12px !important;
-    height: 12px !important;
+    bottom: 2px !important;
+    right: 2px !important;
+    width: 8px !important;
+    height: 8px !important;
     padding: 0 !important;
-    font-size: 8px !important;
-    border-radius: 50% !important;
+    font-size: 6px !important;
+    border-radius: 0 !important;
     background: transparent !important;
     border: none !important;
-    color: rgba(0, 0, 0, 0.15) !important;
-    z-index: 1000 !important;
+    color: rgba(128, 128, 128, 0.1) !important;
+    z-index: 999 !important;
     transition: all 0.2s ease !important;
     cursor: pointer !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
-.admin-tiny-btn:hover {
+#admin-toggle.admin-tiny-btn:hover {
     background: transparent !important;
-    color: rgba(0, 0, 0, 0.4) !important;
-    transform: scale(1.2) !important;
+    color: rgba(128, 128, 128, 0.3) !important;
+    transform: scale(1.1) !important;
+    box-shadow: none !important;
 }
 
-[data-theme="dark"] .admin-tiny-btn {
+#admin-toggle.admin-tiny-btn:focus {
+    background: transparent !important;
+    color: rgba(128, 128, 128, 0.3) !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] #admin-toggle.admin-tiny-btn {
     background: transparent !important;
     border: none !important;
-    color: rgba(255, 255, 255, 0.15) !important;
+    color: rgba(200, 200, 200, 0.1) !important;
+    box-shadow: none !important;
 }
 
-[data-theme="dark"] .admin-tiny-btn:hover {
+[data-theme="dark"] #admin-toggle.admin-tiny-btn:hover {
     background: transparent !important;
-    color: rgba(255, 255, 255, 0.4) !important;
+    color: rgba(200, 200, 200, 0.3) !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] #admin-toggle.admin-tiny-btn:focus {
+    background: transparent !important;
+    color: rgba(200, 200, 200, 0.3) !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* 모바일 최적화 - 극도로 컴팩트한 레이아웃 */
@@ -1826,11 +1845,11 @@ body:has(#dictionary-screen.active) .accessibility-controls {
         margin-bottom: 4px !important;
     }
     
-    .admin-tiny-btn {
-        width: 10px !important;
-        height: 10px !important;
-        font-size: 7px !important;
-        bottom: 2px !important;
-        right: 2px !important;
+    #admin-toggle.admin-tiny-btn {
+        width: 6px !important;
+        height: 6px !important;
+        font-size: 5px !important;
+        bottom: 1px !important;
+        right: 1px !important;
     }
 }
