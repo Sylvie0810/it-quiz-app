@@ -257,6 +257,9 @@
                     <button class="btn btn--secondary btn--sm" onclick="showGoogleSheetsSetup()">
                         ⚙️ 설정
                     </button>
+                    <button class="btn btn--outline btn--sm" onclick="handleDataReset()">
+                        🔄 원본 데이터로 복구
+                    </button>
                 </div>
             </div>
             
@@ -404,7 +407,7 @@
         // 간단한 비밀번호 확인
         if (panel.classList.contains('hidden')) {
             const password = prompt('관리자 비밀번호를 입력하세요:');
-            if (password !== 'admin123') {
+            if (password !== 'admin730810') {
                 alert('잘못된 비밀번호입니다.');
                 return;
             }
@@ -459,6 +462,29 @@
         
         // 파일 입력 초기화
         input.value = '';
+    }
+    
+    // 원본 데이터로 복구
+    function handleDataReset() {
+        const confirmReset = confirm(`🔄 원본 데이터로 복구하시겠습니까?\n\nGoogle Sheets에서 가져온 모든 업데이트가 삭제되고, 처음 설정된 34개의 용어로 되돌아갑니다.\n\n이 작업은 되돌릴 수 없습니다.`);
+        
+        if (confirmReset) {
+            try {
+                if (window.GoogleSheetsIntegration && window.GoogleSheetsIntegration.clearSavedTermsData) {
+                    window.GoogleSheetsIntegration.clearSavedTermsData();
+                    
+                    // 3초 후 페이지 새로고침
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    alert('❌ 데이터 복구 기능을 찾을 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('데이터 복구 실패:', error);
+                alert('❌ 데이터 복구에 실패했습니다: ' + error.message);
+            }
+        }
     }
     
     // Google Sheets 설정 모달

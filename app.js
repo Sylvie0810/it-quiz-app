@@ -362,6 +362,199 @@ function normalizeText(text) {
     return text.toLowerCase().trim().replace(/[()]/g, '');
 }
 
+// 고급 답안 검증 함수 - 영어/한글 답변 모두 인정
+function isAnswerCorrect(userAnswer, correctAnswer, fullTerm) {
+    // 기본 정규화
+    const normalizedUser = normalizeText(userAnswer);
+    const normalizedCorrect = normalizeText(correctAnswer);
+    const normalizedFull = fullTerm ? normalizeText(fullTerm) : '';
+    
+    // 🔍 디버깅: 정규화된 값들 출력
+    console.log('🔍 답안 검증 디버깅:', {
+        원본사용자답안: userAnswer,
+        원본정답: correctAnswer,
+        원본전체용어: fullTerm,
+        정규화사용자답안: normalizedUser,
+        정규화정답: normalizedCorrect,
+        정규화전체용어: normalizedFull
+    });
+    
+    // 1. 정확한 답안 매칭
+    if (normalizedUser === normalizedCorrect) {
+        console.log('✅ 1번 체크: 정확한 답안 매칭 성공');
+        return true;
+    }
+    
+    // 2. 전체 용어 매칭 (예: "API (Application Programming Interface)")
+    if (normalizedFull && normalizedUser === normalizedFull) {
+        console.log('✅ 2번 체크: 전체 용어 매칭 성공');
+        return true;
+    }
+    
+    // 3. 괄호 앞부분만 매칭 (예: "API")
+    if (normalizedFull && normalizedUser === normalizedFull.split(' (')[0]) {
+        console.log('✅ 3번 체크: 괄호 앞부분 매칭 성공');
+        return true;
+    }
+    
+    // 4. 한글 부분만 추출해서 매칭 (예: "Parsing(파싱)" -> "파싱")
+    const koreanMatch = normalizedCorrect.match(/[가-힣]+/);
+    const fullKoreanMatch = normalizedFull.match(/[가-힣]+/);
+    if (koreanMatch && normalizedUser === koreanMatch[0]) {
+        console.log('✅ 4-1번 체크: 한글 부분 매칭 성공');
+        return true;
+    }
+    if (fullKoreanMatch && normalizedUser === fullKoreanMatch[0]) {
+        console.log('✅ 4-2번 체크: 전체용어 한글 부분 매칭 성공');
+        return true;
+    }
+    
+    // 5. 영어 부분만 추출해서 매칭 (예: "Parsing(파싱)" -> "parsing")
+    const englishMatch = normalizedCorrect.match(/[a-z]+/);
+    const fullEnglishMatch = normalizedFull.match(/[a-z]+/);
+    if (englishMatch && normalizedUser === englishMatch[0]) {
+        console.log('✅ 5-1번 체크: 영어 부분 매칭 성공');
+        return true;
+    }
+    if (fullEnglishMatch && normalizedUser === fullEnglishMatch[0]) {
+        console.log('✅ 5-2번 체크: 전체용어 영어 부분 매칭 성공');
+        return true;
+    }
+    
+    // 6. 영어-한글 매핑 테이블
+    const termMappings = {
+        // 영어 -> 한글
+        'api': ['api', '에이피아이', '아피'],
+        'html': ['html', '에이치티엠엘', 'HTML'],
+        'css': ['css', '씨에스에스', 'CSS'],
+        'javascript': ['javascript', '자바스크립트', 'js'],
+        'react': ['react', '리액트'],
+        'node.js': ['node.js', 'nodejs', '노드제이에스', '노드'],
+        'framework': ['framework', '프레임워크'],
+        'library': ['library', '라이브러리'],
+        'component': ['component', '컴포넌트'],
+        'interface': ['interface', '인터페이스'],
+        'protocol': ['protocol', '프로토콜'],
+        'routing': ['routing', '라우팅'],
+        'rendering': ['rendering', '렌더링'],
+        'compile': ['compile', '컴파일'],
+        'hosting': ['hosting', '호스팅'],
+        'parsing': ['parsing', '파싱', 'parsing파싱', '파싱parsing'],
+        'refactoring': ['refactoring', '리팩토링'],
+        'token': ['token', '토큰'],
+        'tree': ['tree', '트리'],
+        'cdn': ['cdn', '시디엔'],
+        'pwa': ['pwa', '피더블유에이'],
+        'sdk': ['sdk', '에스디케이'],
+        'ide': ['ide', '아이디이'],
+        'ui': ['ui', '유아이', '사용자인터페이스', '사용자 인터페이스'],
+        'mcp': ['mcp', '엠씨피'],
+        'next.js': ['next.js', 'nextjs', '넥스트제이에스', '넥스트'],
+        'wireframe': ['wireframe', '와이어프레임'],
+        'prototype': ['prototype', '프로토타입'],
+        'object': ['object', '객체'],
+        'execution': ['execution', '실행'],
+        'crawling': ['crawling', '크롤링'],
+        'scraping': ['scraping', '스크래핑'],
+        
+        // 한글 -> 영어도 지원
+        '에이피아이': ['api', '에이피아이', '아피'],
+        '자바스크립트': ['javascript', '자바스크립트', 'js'],
+        '리액트': ['react', '리액트'],
+        '프레임워크': ['framework', '프레임워크'],
+        '라이브러리': ['library', '라이브러리'],
+        '컴포넌트': ['component', '컴포넌트'],
+        '인터페이스': ['interface', '인터페이스'],
+        '프로토콜': ['protocol', '프로토콜'],
+        '라우팅': ['routing', '라우팅'],
+        '렌더링': ['rendering', '렌더링'],
+        '컴파일': ['compile', '컴파일'],
+        '호스팅': ['hosting', '호스팅'],
+        '파싱': ['parsing', '파싱', 'parsing파싱', '파싱parsing'],
+        '리팩토링': ['refactoring', '리팩토링'],
+        '토큰': ['token', '토큰'],
+        '트리': ['tree', '트리'],
+        '객체': ['object', '객체'],
+        '실행': ['execution', '실행'],
+        '크롤링': ['crawling', '크롤링'],
+        '스크래핑': ['scraping', '스크래핑']
+    };
+    
+    // 7. 매핑 테이블을 통한 검증
+    console.log('🔍 매핑 테이블 검증 시작...');
+    for (const [key, variants] of Object.entries(termMappings)) {
+        if (variants.includes(normalizedUser)) {
+            console.log(`🔍 사용자 답안 "${normalizedUser}"이 "${key}" 그룹에서 발견됨:`, variants);
+            // 사용자 답안이 매핑 테이블에 있으면, 정답도 같은 그룹에 있는지 확인
+            if (variants.includes(normalizedCorrect) || 
+                variants.includes(normalizedFull) || 
+                variants.includes(normalizedFull.split(' (')[0])) {
+                console.log('✅ 7번 체크: 매핑 테이블 매칭 성공');
+                return true;
+            } else {
+                console.log(`❌ 정답 "${normalizedCorrect}", 전체용어 "${normalizedFull}"이 같은 그룹에 없음`);
+            }
+        }
+    }
+    
+    // 8. 동적 영어-한글 변환 패턴 매칭
+    // 영어 용어를 한글로 입력하는 경우들을 감지
+    const dynamicPatterns = [
+        // 일반적인 영어 -> 한글 발음 패턴
+        { pattern: /api/i, variants: ['api', '에이피아이', '아피', 'a.p.i'] },
+        { pattern: /ui/i, variants: ['ui', '유아이', 'u.i'] },
+        { pattern: /cdn/i, variants: ['cdn', '시디엔', 'c.d.n'] },
+        { pattern: /sdk/i, variants: ['sdk', '에스디케이', 's.d.k'] },
+        { pattern: /ide/i, variants: ['ide', '아이디이', 'i.d.e'] },
+        { pattern: /css/i, variants: ['css', '씨에스에스', 'c.s.s'] },
+        { pattern: /html/i, variants: ['html', '에이치티엠엘', 'h.t.m.l'] },
+        { pattern: /xml/i, variants: ['xml', '엑스엠엘', 'x.m.l'] },
+        { pattern: /sql/i, variants: ['sql', '에스큐엘', 's.q.l'] },
+        { pattern: /php/i, variants: ['php', '피에이치피', 'p.h.p'] },
+        { pattern: /npm/i, variants: ['npm', '엔피엠', 'n.p.m'] },
+        { pattern: /git/i, variants: ['git', '깃', 'g.i.t'] },
+        { pattern: /url/i, variants: ['url', '유알엘', 'u.r.l'] },
+        { pattern: /ftp/i, variants: ['ftp', '에프티피', 'f.t.p'] },
+        { pattern: /tcp/i, variants: ['tcp', '티씨피', 't.c.p'] },
+        { pattern: /http/i, variants: ['http', '에이치티티피', 'h.t.t.p'] },
+        { pattern: /https/i, variants: ['https', '에이치티티피에스', 'h.t.t.p.s'] }
+    ];
+    
+    // 동적 패턴 검사
+    for (const { pattern, variants } of dynamicPatterns) {
+        if (pattern.test(normalizedCorrect) || pattern.test(normalizedUser)) {
+            if (variants.some(v => v === normalizedUser) && 
+                variants.some(v => v === normalizedCorrect || normalizedFull.includes(v))) {
+                return true;
+            }
+        }
+    }
+    
+         // 9. 부분 매칭 (최소 3글자 이상, 80% 이상 일치)
+     if (normalizedUser.length >= 3 && normalizedCorrect.length >= 3) {
+         const shorter = normalizedUser.length < normalizedCorrect.length ? normalizedUser : normalizedCorrect;
+         const longer = normalizedUser.length < normalizedCorrect.length ? normalizedCorrect : normalizedUser;
+         
+         if (longer.includes(shorter) && shorter.length / longer.length >= 0.8) {
+             console.log('✅ 9번 체크: 부분 매칭 성공');
+             return true;
+         }
+     }
+     
+     // 10. 한영 혼용 표기 허용 (예: "HTTP프로토콜", "API인터페이스")
+    const cleanUser = normalizedUser.replace(/[^a-z가-힣0-9]/g, '');
+    const cleanCorrect = normalizedCorrect.replace(/[^a-z가-힣0-9]/g, '');
+    const cleanFull = normalizedFull.replace(/[^a-z가-힣0-9]/g, '');
+    
+         if (cleanUser === cleanCorrect || cleanUser === cleanFull) {
+         console.log('✅ 10번 체크: 한영 혼용 표기 매칭 성공');
+         return true;
+     }
+     
+     console.log('❌ 모든 검증 실패 - 오답 처리');
+     return false;
+}
+
 // 문제 생성 함수들
 function generateMultipleChoiceQuestions() {
     const questions = [];
@@ -814,28 +1007,30 @@ function submitAnswer() {
         isCorrect = userAnswer === question.correctAnswer;
     } else if (question.type === 'short-answer') {
         userAnswer = answerOptions.querySelector('.text-input').value.trim();
-        const normalizedUserAnswer = normalizeText(userAnswer);
-        const normalizedCorrectAnswer = normalizeText(question.correctAnswer);
         
-        // 단답형도 유연한 답안 검증
-        // 1. 정확한 답안 (짧은 형태)
-        // 2. 전체 용어 형태도 허용 (예: "API (Application Programming Interface)")
-        // 3. 약어만으로도 허용 (예: "API")
-        isCorrect = normalizedUserAnswer === normalizedCorrectAnswer ||
-                   (question.fullTerm && normalizeText(userAnswer) === normalizeText(question.fullTerm)) ||
-                   (question.fullTerm && normalizeText(userAnswer) === normalizeText(question.fullTerm.split(' (')[0]));
+        // 🌟 고급 답안 검증 - 영어/한글 답변 모두 인정
+        isCorrect = isAnswerCorrect(userAnswer, question.correctAnswer, question.fullTerm);
+        
+        // 디버깅: 답안 검증 과정 로그
+        console.log('🔍 단답형 문제 채점:', {
+            사용자답안: userAnswer,
+            정답: question.correctAnswer,
+            전체용어: question.fullTerm,
+            채점결과: isCorrect ? '✅ 정답' : '❌ 오답'
+        });
     } else if (question.type === 'application') {
         userAnswer = answerOptions.querySelector('.text-input').value.trim();
-        const normalizedUserAnswer = normalizeText(userAnswer);
-        const normalizedCorrectAnswer = normalizeText(question.correctAnswer);
         
-        // 응용문제는 더 유연한 답안 검증
-        // 1. 정확한 답안
-        // 2. 전체 용어 형태도 허용 (예: "API (Application Programming Interface)")
-        // 3. 약어만으로도 허용 (예: "API")
-        isCorrect = normalizedUserAnswer === normalizedCorrectAnswer ||
-                   (question.fullTerm && normalizeText(userAnswer) === normalizeText(question.fullTerm)) ||
-                   (question.fullTerm && normalizeText(userAnswer) === normalizeText(question.fullTerm.split(' (')[0]));
+        // 🌟 고급 답안 검증 - 영어/한글 답변 모두 인정
+        isCorrect = isAnswerCorrect(userAnswer, question.correctAnswer, question.fullTerm);
+        
+        // 디버깅: 답안 검증 과정 로그
+        console.log('🔍 응용 문제 채점:', {
+            사용자답안: userAnswer,
+            정답: question.correctAnswer,
+            전체용어: question.fullTerm,
+            채점결과: isCorrect ? '✅ 정답' : '❌ 오답'
+        });
     } else if (question.type === 'true-false') {
         userAnswer = submitBtn.dataset.answer === 'true';
         isCorrect = userAnswer === question.correctAnswer;
@@ -1237,6 +1432,13 @@ function resetSearch() {
 document.addEventListener('DOMContentLoaded', () => {
     // 접근성 초기화
     initializeAccessibility();
+    
+    // Google Sheets 통합: 저장된 데이터가 있으면 로드
+    setTimeout(() => {
+        if (window.GoogleSheetsIntegration && window.GoogleSheetsIntegration.initializeTermsData) {
+            window.GoogleSheetsIntegration.initializeTermsData();
+        }
+    }, 100);
     
     // 초기 용어 개수 업데이트
     updateTermsCount();

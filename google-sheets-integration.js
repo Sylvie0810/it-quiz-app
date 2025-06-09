@@ -99,6 +99,9 @@ async function updateTermsFromGoogleSheets() {
             console.log('업데이트 후 termsData 개수:', termsData.length);
             console.log('업데이트 후 termsData 샘플:', termsData.slice(0, 3));
             
+            // 💾 중요: localStorage에 업데이트된 데이터 저장
+            saveTermsToLocalStorage(newTermsData);
+            
             console.log('용어 데이터가 성공적으로 업데이트되었습니다.');
             
             // 사전 화면이 열려있으면 새로고침
@@ -293,11 +296,94 @@ function loadFromCSVFile(file) {
     });
 }
 
+/**
+ * localStorage에 용어 데이터 저장
+ */
+function saveTermsToLocalStorage(data) {
+    try {
+        const dataToSave = {
+            terms: data,
+            lastUpdated: new Date().toISOString(),
+            source: 'google_sheets'
+        };
+        localStorage.setItem('quizTermsData', JSON.stringify(dataToSave));
+        console.log('✅ 용어 데이터가 localStorage에 저장되었습니다.');
+    } catch (error) {
+        console.error('❌ localStorage 저장 실패:', error);
+    }
+}
+
+/**
+ * localStorage에서 용어 데이터 로드
+ */
+function loadTermsFromLocalStorage() {
+    try {
+        const saved = localStorage.getItem('quizTermsData');
+        if (saved) {
+            const data = JSON.parse(saved);
+            console.log('📥 localStorage에서 용어 데이터를 불러왔습니다.');
+            console.log('마지막 업데이트:', data.lastUpdated);
+            console.log('데이터 소스:', data.source);
+            console.log('용어 개수:', data.terms.length);
+            return data.terms;
+        }
+        return null;
+    } catch (error) {
+        console.error('❌ localStorage 로드 실패:', error);
+        return null;
+    }
+}
+
+/**
+ * 저장된 데이터 삭제 (원본 데이터로 복구)
+ */
+function clearSavedTermsData() {
+    try {
+        localStorage.removeItem('quizTermsData');
+        console.log('🗑️ 저장된 용어 데이터를 삭제했습니다.');
+        showUpdateNotification('✅ 원본 데이터로 복구되었습니다. 페이지를 새로고침해주세요.', 'success');
+    } catch (error) {
+        console.error('❌ 데이터 삭제 실패:', error);
+        showUpdateNotification('❌ 데이터 삭제에 실패했습니다.', 'error');
+    }
+}
+
+/**
+ * 앱 초기화 시 저장된 데이터가 있으면 로드
+ */
+function initializeTermsData() {
+    const savedData = loadTermsFromLocalStorage();
+    if (savedData && savedData.length > 0) {
+        if (typeof termsData !== 'undefined') {
+            termsData.length = 0; // 기존 배열 비우기
+            termsData.push(...savedData); // 저장된 데이터 로드
+            console.log('🔄 저장된 데이터로 termsData를 초기화했습니다.');
+            console.log('로드된 용어 개수:', termsData.length);
+            
+            // UI 업데이트
+            if (typeof updateTermsCount === 'function') {
+                updateTermsCount();
+            }
+            
+            // 저장된 데이터 사용 중임을 알림 (3초 후 자동 숨김)
+            setTimeout(() => {
+                showUpdateNotification('📱 저장된 Google Sheets 데이터를 사용 중입니다.', 'success');
+            }, 1000);
+        }
+    } else {
+        console.log('💡 저장된 데이터가 없어 원본 데이터를 사용합니다.');
+    }
+}
+
 // 전역 함수로 내보내기
 window.GoogleSheetsIntegration = {
     updateTermsFromGoogleSheets,
     setupAutoUpdate,
     downloadTemplateCSV,
     loadFromCSVFile,
-    fetchDataFromGoogleSheets
+    fetchDataFromGoogleSheets,
+    saveTermsToLocalStorage,
+    loadTermsFromLocalStorage,
+    clearSavedTermsData,
+    initializeTermsData
 }; 
