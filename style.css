@@ -1560,6 +1560,11 @@ body {
 
 /* 🎯 UX 개선: 공간 효율적인 퀴즈 레이아웃 */
 
+/* 디버깅: CSS 로드 확인용 */
+#quiz-screen .quiz-container {
+    border: 2px solid red !important;
+}
+
 /* 퀴즈 화면에서 관리자 패널 숨기기 */
 body:has(#quiz-screen.active) .accessibility-controls,
 body:has(#result-screen.active) .accessibility-controls,
@@ -1574,23 +1579,23 @@ body:has(#dictionary-screen.active) .accessibility-controls {
 
 /* 새로운 퀴즈 컨테이너 - 전체 화면 활용 */
 .quiz-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 15px;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-sizing: border-box;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding: 15px !important;
+    height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
 }
 
 /* 문제 헤더 - 한 줄로 배치 */
 .question-header {
-    display: flex;
-    align-items: baseline;
-    gap: 15px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 15px !important;
+    margin-bottom: 15px !important;
+    flex-wrap: wrap !important;
 }
 
 .question-type {
