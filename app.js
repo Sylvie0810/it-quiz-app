@@ -335,7 +335,38 @@ function toggleMotion() {
     }
 }
 
-// 퀴즈 유형별 제목
+// 🎯 UX 개선: 문제 유형별 제목과 서브타이틀
+function getQuestionTypeTitle(type) {
+    switch (type) {
+        case 'multiple-choice':
+            return '객관식 문제';
+        case 'short-answer':
+            return '단답형 문제';
+        case 'true-false':
+            return '참/거짓 문제';
+        case 'application':
+            return '응용 문제';
+        default:
+            return '퀴즈';
+    }
+}
+
+function getQuestionSubtitle(type) {
+    switch (type) {
+        case 'multiple-choice':
+            return '다음 정의에 해당하는 용어를 선택하세요';
+        case 'short-answer':
+            return '다음 정의에 해당하는 용어를 입력하세요';
+        case 'true-false':
+            return '용어와 정의가 올바르게 연결되었는지 판단하세요';
+        case 'application':
+            return '실제 상황에서 어떤 용어가 적용되는지 입력하세요';
+        default:
+            return '';
+    }
+}
+
+// 퀴즈 유형별 제목 (기존 호환성을 위해 유지)
 const quizTitles = {
     'multiple-choice': '객관식 문제',
     'short-answer': '단답형 문제',
@@ -788,7 +819,18 @@ function generateApplicationQuestions() {
 // 화면 전환 함수
 function showScreen(screen) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    screen.classList.add('active');
+    
+    // screen이 문자열인 경우 element로 변환
+    const screenElement = typeof screen === 'string' ? document.getElementById(screen) : screen;
+    screenElement.classList.add('active');
+    
+    // 🎯 퀴즈 모드일 때 관리자 패널 숨기기
+    const screenId = screenElement.id;
+    if (screenId === 'quiz-screen' || screenId === 'result-screen' || screenId === 'dictionary-screen') {
+        document.body.classList.add('quiz-mode');
+    } else {
+        document.body.classList.remove('quiz-mode');
+    }
 }
 
 // 퀴즈 시작
@@ -820,7 +862,7 @@ function startQuiz(type) {
     questionStates = new Array(currentQuestions.length).fill(null);
     
     questionTitle.textContent = quizTitles[type];
-    showScreen(quizScreen);
+    showScreen('quiz-screen');
     displayQuestion();
 }
 
@@ -829,6 +871,13 @@ function displayQuestion() {
     const question = currentQuestions[currentQuestionIndex];
     const savedState = questionStates[currentQuestionIndex];
     answered = savedState ? savedState.answered : false;
+    
+    // 🎯 문제 유형과 설명을 함께 표시
+    const questionTitle = document.getElementById('question-title');
+    const questionSubtitle = document.getElementById('question-subtitle');
+    
+    if (questionTitle) questionTitle.textContent = getQuestionTypeTitle(question.type);
+    if (questionSubtitle) questionSubtitle.textContent = getQuestionSubtitle(question.type);
     
     // 진행률 업데이트
     const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
@@ -906,7 +955,16 @@ function displayShortAnswer(question) {
     input.addEventListener('input', () => {
         submitBtn.disabled = input.value.trim() === '';
     });
+    
+    // ⚡ Enter 키로 답안 제출
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !answered && input.value.trim() !== '') {
+            submitAnswer();
+        }
+    });
+    
     answerOptions.appendChild(input);
+    input.focus(); // 자동 포커스
 }
 
 function displayTrueFalse(question) {
@@ -936,7 +994,16 @@ function displayApplication(question) {
     input.addEventListener('input', () => {
         submitBtn.disabled = input.value.trim() === '';
     });
+    
+    // ⚡ Enter 키로 답안 제출
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !answered && input.value.trim() !== '') {
+            submitAnswer();
+        }
+    });
+    
     answerOptions.appendChild(input);
+    input.focus(); // 자동 포커스
 }
 
 // 답안 선택 함수들
@@ -1089,7 +1156,7 @@ function submitAnswer() {
         feedbackClass: feedbackClass
     };
     
-    showFeedback(isCorrect, question.explanation);
+    showFeedback(isCorrect, question.explanation, question.type);
     submitBtn.classList.add('hidden');
     nextBtn.classList.remove('hidden');
     
@@ -1119,11 +1186,21 @@ function submitAnswer() {
     }
 }
 
-function showFeedback(isCorrect, explanation) {
-    feedback.innerHTML = `
-        <h4>${isCorrect ? '정답입니다!' : '틀렸습니다.'}</h4>
-        <p>${explanation}</p>
-    `;
+function showFeedback(isCorrect, explanation, questionType) {
+    let feedbackContent = '';
+    
+    if (isCorrect) {
+        // 정답일 때는 간단한 메시지만
+        feedbackContent = `<h4>✅ 정답입니다!</h4>`;
+    } else {
+        // 틀렸을 때만 상세한 설명 표시
+        feedbackContent = `
+            <h4>❌ 틀렸습니다.</h4>
+            <p>${explanation}</p>
+        `;
+    }
+    
+    feedback.innerHTML = feedbackContent;
     feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
     feedback.classList.remove('hidden');
 }

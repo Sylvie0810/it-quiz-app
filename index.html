@@ -17,11 +17,8 @@
 <body>
     <!-- 접근성 컨트롤 -->
     <div class="accessibility-controls">
-        <button class="btn btn--sm btn--outline" id="theme-toggle" aria-label="다크모드 전환">
-            <span class="theme-icon">🌙</span>
-        </button>
-        <button class="btn btn--sm btn--outline" id="motion-toggle" aria-label="모션 감소">
-            <span class="motion-icon">⚡</span>
+        <button class="btn btn--sm btn--outline" id="admin-toggle" aria-label="관리자 패널" title="관리자 패널">
+            <span class="admin-icon">⚙️</span>
         </button>
     </div>
 
@@ -116,28 +113,34 @@
 
         <!-- 퀴즈 화면 -->
         <div id="quiz-screen" class="screen">
-            <div class="quiz-header">
+            <div class="quiz-container">
                 <div class="quiz-progress">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progress-fill"></div>
                     </div>
                     <span class="progress-text" id="progress-text">1 / 15</span>
                 </div>
-                <button class="btn btn--outline btn--sm" id="home-btn">홈으로</button>
-            </div>
-            
-            <div class="quiz-content">
-                <div class="question-card card">
-                    <div class="card__body">
-                        <h2 id="question-title">객관식 문제</h2>
-                        <div id="question-content"></div>
-                        <div id="answer-options"></div>
-                        <div id="feedback" class="feedback hidden"></div>
-                        <div class="question-actions">
-                            <button class="btn btn--outline" id="prev-btn">이전</button>
-                            <button class="btn btn--primary" id="submit-btn" disabled>답안 제출</button>
-                            <button class="btn btn--secondary hidden" id="next-btn">다음 문제</button>
-                        </div>
+                
+                <div class="question-header">
+                    <h2 id="question-title" class="question-type">객관식 문제</h2>
+                    <span id="question-subtitle" class="question-subtitle">다음 정의에 해당하는 용어를 선택하세요</span>
+                </div>
+                
+                <div id="question-content" class="question-content"></div>
+                <div id="answer-options" class="answer-options"></div>
+                <div id="feedback" class="feedback hidden"></div>
+                
+                <div class="question-actions">
+                    <button class="btn btn--outline" id="prev-btn">이전</button>
+                    <button class="btn btn--primary" id="submit-btn" disabled>답안 제출</button>
+                    <button class="btn btn--secondary hidden" id="next-btn">다음 문제</button>
+                </div>
+                
+                <div class="quiz-footer">
+                    <button class="btn btn--outline btn--sm" id="home-btn">홈으로</button>
+                    <div class="quiz-controls">
+                        <button id="theme-toggle" class="control-btn" title="다크 모드 토글">🌙</button>
+                        <button id="motion-toggle" class="control-btn" title="애니메이션 토글">⚡</button>
                     </div>
                 </div>
             </div>
